@@ -77,7 +77,7 @@ public:
             return true;
 
         } catch (const std::exception& e) {
-            std::cerr << "❌ Ошибка выполнения: " << e.what() << std::endl;
+            std::cerr << "Ошибка выполнения: " << e.what() << std::endl;
             return false;
         }
     }
@@ -87,7 +87,7 @@ public:
     void beginTransaction() {
         if (!currentTransaction) {
             currentTransaction = std::make_unique<pqxx::work>(*conn);
-            std::cout << "🔄 Транзакция начата" << std::endl;
+            std::cout << "Транзакция начата" << std::endl;
         }
     }
 
@@ -151,7 +151,7 @@ public:
         // Закрытие соединения
         if (conn && conn->is_open()) {
             conn->close();
-            std::cout << "🔌 Соединение закрыто" << std::endl;
+            std::cout << "Соединение закрыто" << std::endl;
         }
     }
 
@@ -161,4 +161,4 @@ public:
     }
 };
 
-#endif // DATABASECONNECTION_H
+#endif 
