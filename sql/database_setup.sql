@@ -1,6 +1,3 @@
--- ======================================================
--- ⭐ ХРАНИМЫЕ ПРОЦЕДУРЫ (требование)
--- ======================================================
 
 -- Процедура createOrder с транзакцией
 CREATE OR REPLACE PROCEDURE createOrder(
@@ -18,7 +15,7 @@ order_total DECIMAL(10,2) := 0;
     insufficient_stock BOOLEAN := FALSE;
     stock_error_message TEXT := '';
 BEGIN
-    -- ⭐ НАЧАЛО ТРАНЗАКЦИИ (требование)
+    --НАЧАЛО ТРАНЗАКЦИИ 
 BEGIN
         -- Проверяем существование пользователя
         IF NOT EXISTS (SELECT 1 FROM users WHERE user_id = user_id_param) THEN
@@ -47,7 +44,7 @@ END IF;
 END IF;
 END LOOP;
 
-        -- ⭐ ЕСЛИ ОШИБКА - ОТМЕНА ТРАНЗАКЦИИ (требование)
+        
         IF insufficient_stock THEN
             RAISE EXCEPTION '%', stock_error_message;
 END IF;
@@ -98,11 +95,11 @@ VALUES ('order', new_order_id, 'insert', user_id_param,
 
 result_message := 'Заказ успешно создан';
 
-        -- ⭐ ЗАВЕРШЕНИЕ ТРАНЗАКЦИИ
+        --ЗАВЕРШЕНИЕ ТРАНЗАКЦИИ
 COMMIT;
 
 EXCEPTION WHEN OTHERS THEN
-        -- ⭐ ОТКАТ ТРАНЗАКЦИИ ПРИ ОШИБКЕ (требование)
+        -- ОТКАТ ТРАНЗАКЦИИ ПРИ ОШИБКЕ 
         ROLLBACK;
         result_message := 'Ошибка создания заказа: ' || SQLERRM;
         new_order_id := NULL;
@@ -146,8 +143,6 @@ UPDATE orders
 SET status = new_status_param
 WHERE order_id = order_id_param;
 
--- ⭐ ТРИГГЕР автоматически добавит запись в order_status_history
-
 -- Записываем в аудит
 INSERT INTO audit_log (entity_type, entity_id, operation, performed_by, details)
 VALUES ('order', order_id_param, 'update', changed_by_param,
@@ -163,9 +158,7 @@ END;
 END;
 $$;
 
--- ======================================================
--- ⭐ ФУНКЦИИ PostgreSQL (требование)
--- ======================================================
+--ФУНКЦИИ PostgreSQL
 
 -- 1. getOrderStatus - возвращает статус заказа
 CREATE OR REPLACE FUNCTION getOrderStatus(order_id_param INTEGER)
@@ -321,9 +314,7 @@ ORDER BY o.order_id, h.changed_at;
 END;
 $$ LANGUAGE plpgsql;
 
--- ======================================================
--- ⭐ ТРИГГЕРЫ (требование)
--- ======================================================
+-- ТРИГГЕРЫ 
 
 -- 1. Триггер для автоматического обновления order_date при изменении статуса
 CREATE OR REPLACE FUNCTION update_order_date_on_status_change()
