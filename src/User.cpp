@@ -358,9 +358,9 @@ void Customer::createOrder(const std::vector<std::pair<int, int>>& products) {
                      ", '" + jsonProducts + "'::jsonb, NULL, NULL)";
 
     if (db->executeNonQuery(sql)) {
-        std::cout << "✅ Заказ успешно создан!" << std::endl;
+        std::cout << "Заказ успешно создан!" << std::endl;
     } else {
-        std::cout << "❌ Ошибка при создании заказа" << std::endl;
+        std::cout << "Ошибка при создании заказа" << std::endl;
     }
 }
 
